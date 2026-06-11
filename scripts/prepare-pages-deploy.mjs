@@ -7,13 +7,13 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const prefix = getSitePrefix();
 
 function patchRootHtml(html) {
-  if (!prefix) return html;
+  const assetPrefix = prefix || "/";
 
   return html
-    .replaceAll('src="./env-config.js"', `src="${prefix}env-config.js"`)
-    .replaceAll('src="./auth/login.js"', `src="${prefix}auth/login.js"`)
-    .replaceAll('src="./assets/', `src="${prefix}assets/`)
-    .replaceAll('href="./assets/', `href="${prefix}assets/`);
+    .replaceAll('src="./env-config.js"', `src="${assetPrefix}env-config.js"`)
+    .replaceAll('src="./auth/login.js"', `src="${assetPrefix}auth/login.js"`)
+    .replaceAll('src="./assets/', `src="${assetPrefix}assets/`)
+    .replaceAll('href="./assets/', `href="${assetPrefix}assets/`);
 }
 
 function patchMarketingRouterBasename() {

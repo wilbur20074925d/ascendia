@@ -172,9 +172,30 @@ function mount(root) {
   signUpTab.addEventListener("click", () => setMode("signup"));
   setMode("signin");
 
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session) window.location.replace(getPostLoginUrl());
-  });
+  function clearSupabaseStorage() {
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("sb-")) {
+          localStorage.removeItem(key);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  const signedOut = new URLSearchParams(window.location.search).get("signed_out") === "1";
+
+  if (signedOut) {
+    clearSupabaseStorage();
+    supabase.auth.signOut({ scope: "global" }).catch(() => {});
+    window.history.replaceState({}, "", `${window.location.pathname}`);
+  } else {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) window.location.replace(getPostLoginUrl());
+    });
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

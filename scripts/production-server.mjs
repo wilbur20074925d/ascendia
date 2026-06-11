@@ -31,7 +31,8 @@ function normalizeRequest(req) {
   }
 
   if (pathname === "/login" || pathname === "/login/") {
-    req.url = `/login/index.html${suffix}`;
+    // Serve root SPA so /auth/login.js and /env-config.js resolve correctly.
+    req.url = `/index.html${suffix}`;
   }
 
   return "site";
