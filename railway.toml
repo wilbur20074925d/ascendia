@@ -1,0 +1,17 @@
+# Railway / production hosting
+# Set these in your Railway service variables:
+#
+# VITE_SUPABASE_URL=...
+# VITE_SUPABASE_ANON_KEY=...
+# PUBLIC_SITE_URL=https://ascendia-climb.com
+# MEDIAPIPE_APP_URL=https://ascendia-climb.com/mediapipe-samples-web/
+# SITE_BASE_PATH=          (leave empty for custom domains)
+#
+# Build command: npm run build
+# Start command: npm start
+
+[build]
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npm start"

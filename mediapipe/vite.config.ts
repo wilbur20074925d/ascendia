@@ -28,7 +28,6 @@ const base = process.env.VITE_BASE ?? '/mediapipe-samples-web/';
 
 export default defineConfig({
   base,
-
   plugins: [stripMediapipeSourceMapRefs(), kimiApiPlugin()],
   optimizeDeps: {
     exclude: [

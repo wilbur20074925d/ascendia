@@ -41,26 +41,16 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           SITE_BASE_PATH: /${{ github.event.repository.name }}
+          PUBLIC_SITE_URL: https://${{ github.event.repository.name }}.github.io
           MEDIAPIPE_APP_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/mediapipe-samples-web/
         run: node scripts/generate-env-config.mjs
 
-      - name: Build MediaPipe demos
+      - name: Build site for GitHub Pages
         env:
-          VITE_BASE: /${{ github.event.repository.name }}/mediapipe-samples-web/
-        run: npm run build --prefix mediapipe
-
-      - name: Refresh env config for build output
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           SITE_BASE_PATH: /${{ github.event.repository.name }}
+          PUBLIC_SITE_URL: https://${{ github.event.repository.name }}.github.io
           MEDIAPIPE_APP_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/mediapipe-samples-web/
-        run: node scripts/generate-env-config.mjs
-
-      - name: Prepare GitHub Pages paths
-        env:
-          SITE_BASE_PATH: /${{ github.event.repository.name }}
-        run: node scripts/prepare-pages-deploy.mjs
+        run: node scripts/build-site.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

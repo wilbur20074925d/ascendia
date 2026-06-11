@@ -10,11 +10,13 @@
     "mediapipe:predev": "npm run env && npm run predev --prefix mediapipe",
     "mediapipe:dev": "npm run dev --prefix mediapipe",
     "mediapipe:build": "npm run env && npm run build --prefix mediapipe",
+    "build:site": "node scripts/build-site.mjs",
+    "build": "npm run build:site",
     "dev:site": "node scripts/generate-env-config.mjs && node scripts/dev-server.mjs",
     "dev": "npm run mediapipe:predev && concurrently -k -n site,mediapipe -c cyan,magenta \"npm run dev:site\" \"npm run mediapipe:dev\"",
-    "preview": "node scripts/generate-env-config.mjs && serve -s . -l 4173",
+    "preview": "node scripts/generate-env-config.mjs && node scripts/production-server.mjs",
     "prestart": "node scripts/generate-env-config.mjs",
-    "start": "serve -s . -l ${PORT:-3000}"
+    "start": "node scripts/production-server.mjs"
   },
   "dependencies": {
     "serve": "^14.2.4"
