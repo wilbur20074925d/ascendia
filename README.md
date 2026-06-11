@@ -9,7 +9,11 @@ npm install
 npm run dev
 ```
 
-Opens at [http://localhost:5173](http://localhost:5173).
+- Ascendia site: [http://localhost:5173](http://localhost:5173)
+- Sign in at [http://localhost:5173/login](http://localhost:5173/login)
+- After login, MediaPipe demos: [http://localhost:5173/mediapipe-samples-web/](http://localhost:5173/mediapipe-samples-web/)
+
+MediaPipe source lives in [`mediapipe/`](mediapipe/) ([google-ai-edge/mediapipe-samples-web](https://github.com/google-ai-edge/mediapipe-samples-web)).
 
 ## Production
 

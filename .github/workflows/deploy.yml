@@ -24,6 +24,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm run mediapipe:install
+
+      - name: Generate env config
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: node scripts/generate-env-config.mjs
+
+      - name: Build MediaPipe demos
+        run: npm run build --prefix mediapipe
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

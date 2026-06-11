@@ -4,11 +4,24 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "serve -s . -l 5173",
-    "preview": "serve -s . -l 4173",
+    "env": "node scripts/generate-env-config.mjs",
+    "postinstall": "npm run mediapipe:install",
+    "mediapipe:install": "npm install --prefix mediapipe",
+    "mediapipe:predev": "npm run env && npm run predev --prefix mediapipe",
+    "mediapipe:dev": "npm run dev --prefix mediapipe",
+    "mediapipe:build": "npm run env && npm run build --prefix mediapipe",
+    "dev:site": "node scripts/generate-env-config.mjs && node scripts/dev-server.mjs",
+    "dev": "npm run mediapipe:predev && concurrently -k -n site,mediapipe -c cyan,magenta \"npm run dev:site\" \"npm run mediapipe:dev\"",
+    "preview": "node scripts/generate-env-config.mjs && serve -s . -l 4173",
+    "prestart": "node scripts/generate-env-config.mjs",
     "start": "serve -s . -l ${PORT:-3000}"
   },
   "dependencies": {
     "serve": "^14.2.4"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "http-proxy": "^1.18.1",
+    "serve-handler": "^6.1.6"
   }
 }
