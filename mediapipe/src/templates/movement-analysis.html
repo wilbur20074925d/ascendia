@@ -1,0 +1,316 @@
+<div class="analysis-container">
+  <div class="analysis-sidebar">
+    <div class="section-title">Session</div>
+    <div id="session-status" class="session-status session-status--idle">
+      <span class="session-status-dot"></span>
+      <span id="session-status-text">No active recording</span>
+    </div>
+
+    <div class="session-stats-mini">
+      <div class="mini-stat">
+        <span class="mini-stat-label">Frames</span>
+        <span id="stat-frames" class="mini-stat-value">0</span>
+      </div>
+      <div class="mini-stat">
+        <span class="mini-stat-label">Duration</span>
+        <span id="stat-duration" class="mini-stat-value">0s</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Analysis Views</div>
+    <nav class="analysis-subnav" id="analysis-subnav">
+      <a href="#/analysis/movement/overview" class="subnav-link active" data-subpage="overview">
+        <span class="material-icons">dashboard</span> Overview
+      </a>
+      <a href="#/analysis/movement/biomechanics" class="subnav-link" data-subpage="biomechanics">
+        <span class="material-icons">accessibility_new</span> Biomechanics
+      </a>
+      <a href="#/analysis/movement/performance" class="subnav-link" data-subpage="performance">
+        <span class="material-icons">speed</span> Performance
+      </a>
+      <a href="#/analysis/movement/insights" class="subnav-link" data-subpage="insights">
+        <span class="material-icons">auto_awesome</span> AI Insights
+      </a>
+      <a href="#/analysis/movement/training" class="subnav-link" data-subpage="training">
+        <span class="material-icons">school</span> Training & Tips
+      </a>
+    </nav>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Actions</div>
+    <button id="btn-analyze" class="action-button analysis-action-btn" disabled>
+      <span class="material-icons">auto_awesome</span>
+      Run AI Analysis
+    </button>
+    <button id="btn-refresh" class="action-button secondary analysis-action-btn">
+      <span class="material-icons">refresh</span>
+      Refresh Data
+    </button>
+    <button id="btn-clear" class="action-button secondary analysis-action-btn">
+      <span class="material-icons">delete_outline</span>
+      Clear Session
+    </button>
+
+    <a href="#/vision/holistic_landmarker" class="action-button secondary analysis-action-btn analysis-link-btn">
+      <span class="material-icons">videocam</span>
+      Go to Landmarker
+    </a>
+  </div>
+
+  <div class="analysis-main">
+    <div class="analysis-header">
+      <div>
+        <h2 id="subpage-title">Overview</h2>
+        <p id="subpage-subtitle" class="analysis-subtitle">Session summary and key movement scores</p>
+      </div>
+      <div id="overall-score-badge" class="overall-score-badge overall-score-badge--hidden">
+        <span class="overall-score-label">Overall</span>
+        <span id="overall-score-value" class="overall-score-value">—</span>
+      </div>
+    </div>
+
+    <div id="empty-state" class="analysis-empty">
+      <div class="empty-icon-wrap">
+        <span class="material-icons">analytics</span>
+      </div>
+      <h3>No movement data yet</h3>
+      <p>Start recording in Holistic Landmarker to capture pose and hand tracking data for analysis.</p>
+      <a href="#/vision/holistic_landmarker" class="action-button">
+        <span class="material-icons">play_arrow</span>
+        Start Recording
+      </a>
+    </div>
+
+    <div id="subpages" class="analysis-subpages analysis-subpages--hidden">
+      <!-- OVERVIEW -->
+      <div id="subpage-overview" class="subpage active">
+        <div class="metric-cards">
+          <div class="metric-card">
+            <div class="metric-card-icon"><span class="material-icons">visibility</span></div>
+            <div class="metric-card-body">
+              <span class="metric-card-label">Detection Rate</span>
+              <span id="metric-detection" class="metric-card-value">—</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-icon"><span class="material-icons">speed</span></div>
+            <div class="metric-card-body">
+              <span class="metric-card-label">Avg Velocity</span>
+              <span id="metric-velocity" class="metric-card-value">—</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-icon"><span class="material-icons">accessibility_new</span></div>
+            <div class="metric-card-body">
+              <span class="metric-card-label">Posture Stability</span>
+              <span id="metric-posture" class="metric-card-value">—</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-icon"><span class="material-icons">balance</span></div>
+            <div class="metric-card-body">
+              <span class="metric-card-label">Balance</span>
+              <span id="metric-balance" class="metric-card-value">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Session Summary</h3>
+              <span class="panel-tag">Overview</span>
+            </div>
+            <p id="overview-summary" class="overview-summary-text"></p>
+            <div id="overview-highlights" class="highlight-chips"></div>
+          </div>
+
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Score Breakdown</h3>
+              <span class="panel-tag">Composite</span>
+            </div>
+            <div id="score-breakdown" class="score-breakdown"></div>
+          </div>
+
+          <div class="analysis-panel analysis-panel--wide">
+            <div class="panel-header">
+              <h3>Quick Movement Snapshot</h3>
+              <span class="panel-tag">At a glance</span>
+            </div>
+            <div id="body-regions" class="body-regions"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIOMECHANICS -->
+      <div id="subpage-biomechanics" class="subpage">
+        <div class="biomech-hero">
+          <div class="biomech-score-card">
+            <span class="biomech-score-label">Symmetry Score</span>
+            <span id="symmetry-score" class="biomech-score-value">—</span>
+            <span id="symmetry-side" class="biomech-score-detail"></span>
+          </div>
+          <div class="symmetry-bars" id="symmetry-bars"></div>
+        </div>
+
+        <div class="analysis-panel analysis-panel--wide">
+          <div class="panel-header">
+            <h3>Joint Angle Analysis</h3>
+            <span class="panel-tag">Degrees °</span>
+          </div>
+          <div id="joint-insights" class="joint-insights-grid"></div>
+        </div>
+
+        <div class="analysis-grid">
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Posture Stability</h3>
+              <span class="panel-tag">Hip center</span>
+            </div>
+            <div id="posture-detail" class="detail-block"></div>
+          </div>
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Balance & Alignment</h3>
+              <span class="panel-tag">Shoulder-hip</span>
+            </div>
+            <div id="balance-detail" class="detail-block"></div>
+          </div>
+        </div>
+
+        <div class="analysis-panel analysis-panel--wide">
+          <div class="panel-header">
+            <h3>Joint Angles Over Time</h3>
+            <span class="panel-tag">Timeline</span>
+          </div>
+          <canvas id="chart-angles" class="analysis-chart analysis-chart--tall" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- PERFORMANCE -->
+      <div id="subpage-performance" class="subpage">
+        <div class="perf-stats-row" id="perf-stats"></div>
+
+        <div class="analysis-grid">
+          <div class="analysis-panel analysis-panel--wide">
+            <div class="panel-header">
+              <h3>Movement Velocity</h3>
+              <span class="panel-tag">Timeline</span>
+            </div>
+            <canvas id="chart-velocity" class="analysis-chart" height="200"></canvas>
+          </div>
+
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Activity Phases</h3>
+              <span class="panel-tag">Intensity</span>
+            </div>
+            <div id="perf-phases" class="perf-phases"></div>
+          </div>
+        </div>
+
+        <div class="analysis-grid">
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Body Region Activity</h3>
+              <span class="panel-tag">Distribution</span>
+            </div>
+            <div id="perf-body-regions" class="body-regions"></div>
+          </div>
+
+          <div class="analysis-panel">
+            <div class="panel-header">
+              <h3>Hand Tracking</h3>
+              <span class="panel-tag">Bilateral</span>
+            </div>
+            <div class="hand-activity">
+              <div class="hand-bar-row">
+                <span>Left Hand</span>
+                <div class="hand-bar-track"><div id="hand-left-bar" class="hand-bar-fill"></div></div>
+                <span id="hand-left-val" class="hand-val">—</span>
+              </div>
+              <div class="hand-bar-row">
+                <span>Right Hand</span>
+                <div class="hand-bar-track"><div id="hand-right-bar" class="hand-bar-fill hand-bar-fill--right"></div></div>
+                <span id="hand-right-val" class="hand-val">—</span>
+              </div>
+            </div>
+            <div id="hand-insight" class="insight-callout"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI INSIGHTS -->
+      <div id="subpage-insights" class="subpage">
+        <div id="ai-empty" class="ai-empty-state">
+          <span class="material-icons">psychology</span>
+          <h3>AI analysis not run yet</h3>
+          <p>Generate deep movement insights powered by Kimi AI based on your recorded session data.</p>
+          <button id="btn-analyze-inline" class="action-button" disabled>
+            <span class="material-icons">auto_awesome</span>
+            Run AI Analysis
+          </button>
+        </div>
+
+        <div id="ai-panel" class="ai-panel-content ai-panel-content--hidden">
+          <div id="ai-loading" class="ai-loading ai-loading--hidden">
+            <div class="ai-spinner"></div>
+            <p>Analyzing your movement patterns with Kimi AI...</p>
+          </div>
+
+          <div id="ai-content" class="ai-content">
+            <p id="ai-summary" class="ai-summary"></p>
+            <div class="ai-quality-grid" id="ai-quality-grid"></div>
+            <div class="ai-columns">
+              <div class="ai-column">
+                <h4><span class="material-icons">thumb_up</span> Strengths</h4>
+                <ul id="ai-strengths"></ul>
+              </div>
+              <div class="ai-column">
+                <h4><span class="material-icons">trending_up</span> Areas to Improve</h4>
+                <ul id="ai-improvements"></ul>
+              </div>
+              <div class="ai-column">
+                <h4><span class="material-icons">lightbulb</span> Recommendations</h4>
+                <ul id="ai-recommendations"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRAINING & TIPS -->
+      <div id="subpage-training" class="subpage">
+        <div class="training-intro">
+          <span class="material-icons">school</span>
+          <div>
+            <h3>Personalized Training Guidance</h3>
+            <p>Suggestions derived from your movement metrics, symmetry data, and activity patterns.</p>
+          </div>
+        </div>
+
+        <div id="training-tips" class="training-tips-grid"></div>
+
+        <div class="analysis-panel analysis-panel--wide">
+          <div class="panel-header">
+            <h3>Focus Areas This Week</h3>
+            <span class="panel-tag">Priority</span>
+          </div>
+          <div id="focus-areas" class="focus-areas"></div>
+        </div>
+
+        <div class="analysis-panel analysis-panel--wide">
+          <div class="panel-header">
+            <h3>Related Resources</h3>
+            <span class="panel-tag">Explore</span>
+          </div>
+          <div id="related-resources" class="related-resources"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

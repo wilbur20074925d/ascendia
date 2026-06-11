@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import httpProxy from "http-proxy";
 import handler from "serve-handler";
+import { handleKimiRequest } from "./kimi-proxy.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MEDIAPIPE_TARGET = "http://localhost:5174";
@@ -12,6 +13,20 @@ const proxy = httpProxy.createProxyServer({ ws: true, changeOrigin: true });
 
 const server = http.createServer((req, res) => {
   const url = req.url ?? "/";
+
+  if (url === "/api/kimi" || url.startsWith("/api/kimi?") || url.startsWith("/api/kimi/")) {
+    handleKimiRequest(req, res).catch((err) => {
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            error: err instanceof Error ? err.message : "Internal server error",
+          }),
+        );
+      }
+    });
+    return;
+  }
 
   if (url.startsWith("/mediapipe-samples-web")) {
     proxy.web(req, res, { target: MEDIAPIPE_TARGET }, (err) => {

@@ -32,10 +32,11 @@ import { setupLanguageDetector, cleanupLanguageDetector } from './tasks/language
 import { setupImageEmbedder, cleanupImageEmbedder } from './tasks/image-embedder';
 import { setupInteractiveSegmenter, cleanupInteractiveSegmenter } from './tasks/interactive-segmenter';
 import { setupHolisticLandmarker, cleanupHolisticLandmarker } from './tasks/holistic-landmarker';
+import { setupMovementAnalysis, cleanupMovementAnalysis } from './tasks/movement-analysis';
 import { setupImageClassifier, cleanupImageClassifier } from './tasks/image-classifier';
 
 import { renderSidebar } from './ui/sidebar';
-import { renderMobileNav } from './ui/mobile-nav';
+import { renderMobileNav, updateMobileNavLabel } from './ui/mobile-nav';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -91,6 +92,11 @@ const routes = {
     cleanup: cleanupHolisticLandmarker,
     label: 'Holistic Landmarker',
   },
+  '/analysis/movement': {
+    setup: setupMovementAnalysis,
+    cleanup: cleanupMovementAnalysis,
+    label: 'Movement Analysis',
+  },
   '/vision/image_classifier': {
     setup: setupImageClassifier,
     cleanup: cleanupImageClassifier,
@@ -132,16 +138,24 @@ const routes = {
 
 let currentCleanup: (() => void) | undefined;
 
+function resolveRouteHash(hash: string): string {
+  if (hash in routes) return hash;
+  if (hash.startsWith('/analysis/movement')) return '/analysis/movement';
+  return hash;
+}
+
 async function router() {
   let hash = window.location.hash.slice(1);
+  const routeKey = resolveRouteHash(hash);
 
   // Handle root or invalid routes by defaulting to holistic landmarker
-  if (!hash || !routes[hash as keyof typeof routes]) {
+  if (!hash || !(routeKey in routes)) {
     hash = '/vision/holistic_landmarker';
     window.location.hash = hash;
+    return;
   }
 
-  const route = routes[hash as keyof typeof routes];
+  const route = routes[routeKey as keyof typeof routes];
 
   // Cleanup previous task
   if (currentCleanup) {
@@ -157,12 +171,14 @@ async function router() {
     await route.setup(mainContent);
     currentCleanup = route.cleanup;
     document.title = `${route.label} — ASCENDIA`;
+    updateMobileNavLabel(route.label);
 
     // Update active state in sidebar
     const links = sidebar.querySelectorAll('a');
     links.forEach((l) => {
-      if (l.getAttribute('href') === `#${hash}`) l.classList.add('active');
-      else l.classList.remove('active');
+      const href = l.getAttribute('href') ?? '';
+      const isActive = href === `#${hash}` || (href.startsWith('#/analysis/movement') && hash.startsWith('/analysis/movement'));
+      l.classList.toggle('active', isActive);
     });
   }
 }

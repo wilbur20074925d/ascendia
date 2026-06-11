@@ -18,6 +18,25 @@
       </div>
     </div>
 
+    <div class="divider"></div>
+
+    <div class="section-title">Movement Recording</div>
+    <div class="recording-panel">
+      <div id="recording-status" class="recording-status">
+        <span class="recording-dot"></span>
+        <span id="recording-label">Not recording</span>
+      </div>
+      <div id="recording-frames" class="recording-frames">0 frames captured</div>
+      <button id="recording-toggle" class="action-button recording-btn" disabled>
+        <span class="material-icons">fiber_manual_record</span>
+        Start Recording
+      </button>
+      <a href="#/analysis/movement/overview" class="action-button secondary analysis-link-btn recording-link">
+        <span class="material-icons">analytics</span>
+        View Analysis
+      </a>
+    </div>
+
     <div class="status-group">
       <div id="status-message" class="status-message">Initializing...</div>
       <div id="inference-time" class="inference-time">Inference Time: 0ms</div>

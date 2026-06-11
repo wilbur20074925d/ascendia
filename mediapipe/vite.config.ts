@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { defineConfig, type Plugin } from 'vite';
+import { kimiApiPlugin } from './vite-kimi-plugin.ts';
 
 /** MediaPipe packages reference source maps that are not shipped on npm. */
 function stripMediapipeSourceMapRefs(): Plugin {
@@ -26,7 +27,7 @@ function stripMediapipeSourceMapRefs(): Plugin {
 export default defineConfig({
   base: '/mediapipe-samples-web/',
 
-  plugins: [stripMediapipeSourceMapRefs()],
+  plugins: [stripMediapipeSourceMapRefs(), kimiApiPlugin()],
   optimizeDeps: {
     exclude: [
       '@mediapipe/tasks-vision',

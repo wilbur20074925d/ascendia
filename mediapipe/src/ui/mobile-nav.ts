@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
+export function updateMobileNavLabel(label: string) {
+  const el = document.getElementById('mobile-nav-label');
+  if (el) el.textContent = label;
+}
+
 export function renderMobileNav(container: HTMLElement) {
   container.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
         <span class="brand-name brand-name--compact">ASCENDIA</span>
-        <span style="font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; color: var(--ash);">Holistic Landmarker</span>
+        <span id="mobile-nav-label" style="font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; color: var(--ash);">Holistic Landmarker</span>
       </div>
   `;
 }

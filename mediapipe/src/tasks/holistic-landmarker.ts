@@ -20,16 +20,93 @@ import {
   FaceLandmarker,
   PoseLandmarker,
   HandLandmarker,
+  NormalizedLandmark,
 } from '@mediapipe/tasks-vision';
 import { BaseVisionTask } from '../components/base-vision-task';
+import { movementStore } from '../lib/movement-store';
+import type { LandmarkPoint } from '../lib/movement-types';
 
 // @ts-ignore
 import template from '../templates/holistic-landmarker.html?raw';
 // @ts-ignore
 
+function toLandmarkPoints(landmarks: NormalizedLandmark[] | undefined): LandmarkPoint[] | undefined {
+  if (!landmarks?.length) return undefined;
+  return landmarks.map((l) => ({
+    x: l.x,
+    y: l.y,
+    z: l.z,
+    visibility: l.visibility,
+  }));
+}
+
 class HolisticLandmarkerTask extends BaseVisionTask {
+  private storeUnsubscribe: (() => void) | null = null;
+
   protected override getWorkerInitParams(): Record<string, any> {
     return {};
+  }
+
+  protected override onInitializeUI(): void {
+    this.setupRecordingControls();
+    this.storeUnsubscribe = movementStore.subscribe(() => this.updateRecordingUI());
+    this.updateRecordingUI();
+  }
+
+  private setupRecordingControls() {
+    const btn = document.getElementById('recording-toggle');
+    btn?.addEventListener('click', () => {
+      const session = movementStore.getSession();
+      if (session.isRecording) {
+        movementStore.stopRecording();
+      } else {
+        movementStore.startRecording();
+      }
+      this.updateRecordingUI();
+    });
+  }
+
+  private updateRecordingUI() {
+    const session = movementStore.getSession();
+    const status = document.getElementById('recording-status');
+    const label = document.getElementById('recording-label');
+    const frames = document.getElementById('recording-frames');
+    const btn = document.getElementById('recording-toggle');
+
+    if (status) {
+      status.className = session.isRecording ? 'recording-status recording-status--active' : 'recording-status';
+    }
+    if (label) {
+      label.textContent = session.isRecording ? 'Recording...' : 'Not recording';
+    }
+    if (frames) {
+      frames.textContent = `${session.samples.length} frames captured`;
+    }
+    if (btn) {
+      btn.innerHTML = session.isRecording
+        ? '<span class="material-icons">stop</span> Stop Recording'
+        : '<span class="material-icons">fiber_manual_record</span> Start Recording';
+      btn.classList.toggle('recording-btn--active', session.isRecording);
+    }
+  }
+
+  private captureMovement(result: HolisticLandmarkerResult) {
+    const hasPose = Boolean(result.poseLandmarks?.[0]?.length);
+    movementStore.addSample({
+      timestamp: performance.now(),
+      poseDetected: hasPose,
+      poseLandmarks: toLandmarkPoints(result.poseLandmarks?.[0]),
+      leftHandLandmarks: toLandmarkPoints(result.leftHandLandmarks?.[0]),
+      rightHandLandmarks: toLandmarkPoints(result.rightHandLandmarks?.[0]),
+    });
+  }
+
+  public override cleanup() {
+    if (this.storeUnsubscribe) {
+      this.storeUnsubscribe();
+      this.storeUnsubscribe = null;
+    }
+    super.cleanup();
   }
 
   protected override displayImageResult(result: HolisticLandmarkerResult) {
@@ -44,6 +121,7 @@ class HolisticLandmarkerTask extends BaseVisionTask {
     ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
 
     this.drawResults(ctx, result);
+    this.captureMovement(result);
   }
 
   protected override displayVideoResult(result: HolisticLandmarkerResult) {
@@ -56,6 +134,13 @@ class HolisticLandmarkerTask extends BaseVisionTask {
 
     this.drawResults(this.canvasCtx, result);
     this.canvasCtx.restore();
+    this.captureMovement(result);
+  }
+
+  protected override handleInitDone() {
+    super.handleInitDone();
+    const btn = document.getElementById('recording-toggle') as HTMLButtonElement | null;
+    if (btn) btn.disabled = false;
   }
 
   private drawResults(ctx: CanvasRenderingContext2D, result: HolisticLandmarkerResult) {
