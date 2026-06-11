@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getDefaultMediapipeAppUrl, getSiteBasePath } from "./site-base.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const envPath = path.join(root, ".env");
@@ -32,6 +33,8 @@ if (fs.existsSync(envPath)) {
   env = parseEnv(fs.readFileSync(envPath, "utf8"));
 }
 
+const siteBasePath = getSiteBasePath();
+
 const config = {
   SUPABASE_URL:
     process.env.VITE_SUPABASE_URL ||
@@ -43,8 +46,11 @@ const config = {
     env.VITE_SUPABASE_ANON_KEY ||
     env.SUPABASE_ANON_KEY ||
     "",
+  SITE_BASE_PATH: siteBasePath,
   MEDIAPIPE_APP_URL:
-    process.env.MEDIAPIPE_APP_URL || env.MEDIAPIPE_APP_URL || "",
+    process.env.MEDIAPIPE_APP_URL ||
+    env.MEDIAPIPE_APP_URL ||
+    getDefaultMediapipeAppUrl(),
 };
 
 const contents = `window.__ENV__ = ${JSON.stringify(config, null, 2)};\n`;

@@ -33,11 +33,22 @@ function field(label, input) {
   return el("div", {}, [el("label", { className: labelClass, text: label }), input]);
 }
 
+function getSiteBasePath() {
+  const env = window.__ENV__ || {};
+  if (env.SITE_BASE_PATH) return env.SITE_BASE_PATH.replace(/\/$/, "");
+
+  let path = window.location.pathname.replace(/\/login\/?$/, "");
+  if (path.endsWith("/")) path = path.slice(0, -1);
+  if (path && path !== "/") return path;
+
+  return "";
+}
+
 function getPostLoginUrl() {
   const env = window.__ENV__ || {};
   if (env.MEDIAPIPE_APP_URL) return env.MEDIAPIPE_APP_URL;
 
-  const base = window.location.pathname.replace(/\/login\/?$/, "");
+  const base = getSiteBasePath();
   return `${window.location.origin}${base}/mediapipe-samples-web/`;
 }
 

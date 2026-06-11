@@ -5,6 +5,8 @@ declare global {
     __ENV__?: {
       SUPABASE_URL?: string;
       SUPABASE_ANON_KEY?: string;
+      SITE_BASE_PATH?: string;
+      MEDIAPIPE_APP_URL?: string;
     };
   }
 }
@@ -20,8 +22,21 @@ export function getSupabase(): SupabaseClient | null {
   return createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!);
 }
 
+export function getSiteBasePath(): string {
+  const fromEnv = window.__ENV__?.SITE_BASE_PATH;
+  if (fromEnv) return fromEnv.replace(/\/$/, '');
+
+  const match = window.location.pathname.match(/^(\/[^/]+)\/mediapipe-samples-web/);
+  if (match) return match[1];
+
+  const stripped = window.location.pathname.replace(/\/mediapipe-samples-web\/?.*$/, '');
+  if (stripped && stripped !== '/') return stripped.replace(/\/$/, '');
+
+  return '';
+}
+
 export function getLoginUrl(): string {
-  const base = window.location.pathname.replace(/\/mediapipe-samples-web\/?.*$/, '');
+  const base = getSiteBasePath();
   return `${window.location.origin}${base}/login`;
 }
 

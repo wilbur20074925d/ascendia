@@ -24,8 +24,10 @@ function stripMediapipeSourceMapRefs(): Plugin {
   };
 }
 
+const base = process.env.VITE_BASE ?? '/mediapipe-samples-web/';
+
 export default defineConfig({
-  base: '/mediapipe-samples-web/',
+  base,
 
   plugins: [stripMediapipeSourceMapRefs(), kimiApiPlugin()],
   optimizeDeps: {
