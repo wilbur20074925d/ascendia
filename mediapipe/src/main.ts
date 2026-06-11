@@ -135,9 +135,9 @@ let currentCleanup: (() => void) | undefined;
 async function router() {
   let hash = window.location.hash.slice(1);
 
-  // Handle root or invalid routes by defaulting to object detector
+  // Handle root or invalid routes by defaulting to holistic landmarker
   if (!hash || !routes[hash as keyof typeof routes]) {
-    hash = '/vision/object_detector';
+    hash = '/vision/holistic_landmarker';
     window.location.hash = hash;
   }
 
@@ -156,7 +156,7 @@ async function router() {
   if (route) {
     await route.setup(mainContent);
     currentCleanup = route.cleanup;
-    document.title = `${route.label} - MediaPipe Web Task Demo`;
+    document.title = `${route.label} — ASCENDIA`;
 
     // Update active state in sidebar
     const links = sidebar.querySelectorAll('a');

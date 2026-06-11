@@ -65,7 +65,7 @@ export class ClassificationResult {
         }
         .class-bar {
           height: 100%;
-          background: var(--primary, #007f8b);
+          background: var(--primary, #00d4ff);
           border-radius: 5px;
           transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
@@ -75,7 +75,7 @@ export class ClassificationResult {
           font-family: 'Roboto Mono', monospace;
           font-size: 14px;
           font-weight: 500;
-          color: var(--primary, #007f8b);
+          color: var(--primary, #00d4ff);
         }
       `;
       document.head.appendChild(style);

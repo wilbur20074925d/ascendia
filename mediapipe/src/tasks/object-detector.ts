@@ -126,7 +126,7 @@ class ObjectDetectorTask extends BaseVisionTask {
   private drawDetection(ctx: CanvasRenderingContext2D, detection: any, mirror: boolean) {
     const drawingUtils = new DrawingUtils(ctx);
     drawingUtils.drawBoundingBox(detection.boundingBox!, {
-      color: '#007f8b',
+      color: '#00D4FF',
       lineWidth: 4,
       fillColor: 'transparent',
     });
@@ -134,7 +134,7 @@ class ObjectDetectorTask extends BaseVisionTask {
     const { originX, originY } = detection.boundingBox!;
     let x = originX;
 
-    ctx.fillStyle = '#007f8b';
+    ctx.fillStyle = '#00D4FF';
     ctx.font = '16px sans-serif';
 
     const category = detection.categories[0];
