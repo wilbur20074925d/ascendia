@@ -4,14 +4,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "preview": "vite preview",
+    "dev": "serve -s . -l 5173",
+    "preview": "serve -s . -l 4173",
     "start": "serve -s . -l ${PORT:-3000}"
   },
   "dependencies": {
     "serve": "^14.2.4"
-  },
-  "devDependencies": {
-    "vite": "^6.3.5"
   }
 }
