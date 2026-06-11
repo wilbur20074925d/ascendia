@@ -55,14 +55,18 @@ const config = {
 
 const contents = `window.__ENV__ = ${JSON.stringify(config, null, 2)};\n`;
 
-const mediapipeBuildPath = path.join(root, "mediapipe-samples-web", "env-config.js");
-
 fs.writeFileSync(outPath, contents);
 fs.mkdirSync(path.dirname(mediapipePublicPath), { recursive: true });
 fs.writeFileSync(mediapipePublicPath, contents);
 
-if (fs.existsSync(path.dirname(mediapipeBuildPath))) {
-  fs.writeFileSync(mediapipeBuildPath, contents);
+const mediapipeBuildPath = path.join(root, "mediapipe-samples-web", "env-config.js");
+fs.mkdirSync(path.dirname(mediapipeBuildPath), { recursive: true });
+fs.writeFileSync(mediapipeBuildPath, contents);
+
+if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) {
+  console.warn(
+    "Warning: SUPABASE_URL or SUPABASE_ANON_KEY is missing — login/sign-out will not work until env vars are set.",
+  );
 }
 
 console.log("Generated env-config.js");

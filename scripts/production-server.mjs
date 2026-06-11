@@ -2,6 +2,7 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import handler from "serve-handler";
+import { handleKimiRequest } from "./kimi-proxy.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PORT = Number(process.env.PORT || 3000);
@@ -10,6 +11,10 @@ const MEDIAPIPE_HEADERS = {
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Embedder-Policy": "require-corp",
 };
+
+function isKimiApi(pathname) {
+  return pathname === "/api/kimi" || pathname === "/api/kimi/";
+}
 
 function normalizeRequest(req) {
   const original = req.url ?? "/";
@@ -33,12 +38,35 @@ function normalizeRequest(req) {
 }
 
 const server = http.createServer((req, res) => {
+  const original = req.url ?? "/";
+  const pathname = original.split("?")[0];
+
+  if (isKimiApi(pathname)) {
+    handleKimiRequest(req, res).catch((err) => {
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            error: err instanceof Error ? err.message : "Internal server error",
+          }),
+        );
+      }
+    });
+    return;
+  }
+
   const section = normalizeRequest(req);
 
   if (section === "mediapipe") {
     for (const [key, value] of Object.entries(MEDIAPIPE_HEADERS)) {
       res.setHeader(key, value);
     }
+
+    handler(req, res, {
+      public: root,
+      cleanUrls: false,
+    });
+    return;
   }
 
   handler(req, res, {

@@ -3,6 +3,7 @@
 #
 # VITE_SUPABASE_URL=...
 # VITE_SUPABASE_ANON_KEY=...
+# KIMI_API_KEY=...              (required for AI movement analysis)
 # PUBLIC_SITE_URL=https://ascendia-climb.com
 # MEDIAPIPE_APP_URL=https://ascendia-climb.com/mediapipe-samples-web/
 # SITE_BASE_PATH=          (leave empty for custom domains)

@@ -1,7 +1,8 @@
 import type { AiAnalysisResult, MovementMetrics } from './movement-types';
 
 function getApiUrl(): string {
-  return '/api/kimi';
+  const base = window.__ENV__?.SITE_BASE_PATH?.replace(/\/$/, '') ?? '';
+  return `${base}/api/kimi`;
 }
 
 async function readApiResponse(response: Response): Promise<{ content?: string; error?: string }> {
@@ -18,7 +19,7 @@ async function readApiResponse(response: Response): Promise<{ content?: string; 
 
   if (text.trimStart().startsWith('<!')) {
     throw new Error(
-      'Analysis API returned HTML instead of JSON. Restart the dev server (npm run dev) so /api/kimi is registered.',
+      'Analysis API is unavailable. On production, set KIMI_API_KEY in your host env and redeploy. Locally, run npm run dev.',
     );
   }
 
